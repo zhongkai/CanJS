@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<title>Test</title> 
+	<script type="text/javascript" src="../extension/closure/closure/goog/base.js"></script>
+	<script type="text/javascript" src="../extension/tangram/tangram-1.3.9.source.js"></script>
+	<script type="text/javascript">
+		goog.require('Stefan.Layer');
+	    goog.require('Stefan.ui.Button');
+	    goog.require('Stefan.Timer');
+	    
+	    T.dom.ready(function() {
+	    	var testLayer = new Stefan.Layer(document.body, {
+				width: 200,
+				height: 600,
+				left: 50,
+				top: 50
+			});
+			
+			var tests = ['architecture', 'event'];
+			T.each(tests, function(test,index) {
+				var button = new Stefan.ui.Button().setText(test).setSize(100, 35).setPosition(0, index * 50);
+				button.file = test;
+				button.on('click', function() {
+					location.href = this.file + '.html';
+				});
+				testLayer.appendChild(button);
+			});
+			
+			Stefan.Timer.active();
+	    });
+	</script>
+</head>
+</html>

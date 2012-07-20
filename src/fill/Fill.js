@@ -1,9 +1,10 @@
-goog.provide('Stefan.fill.Fill');
+define(function() {
+	var Fill = function() {};
 
-Stefan.fill.Fill = T.lang.createClass(function() {
-}).extend({
 	//跟fill绑定的元素
-	element: null,
-	render: function() {
-	}
+	Fill.prototype.element = null;
+
+	Fill.prototype.render = function() {};
+
+	return Fill;
 });

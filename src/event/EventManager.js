@@ -2,20 +2,15 @@
  * @author stefan
  * @version 1.0
  */
-goog.provide('Stefan.EventManager');
-
-goog.require('Stefan');
-goog.require('Stefan.Event');
-
 //TODO: 增加自定义事件
-Stefan.EventManager = (function() {
+define(['Can', 'event/Event'], function(can, Event) {
 	var eventCache = {};
 	
 	var eventsArr = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'];
-	
-	
-	var Manager = T.lang.createClass(function() {
-	}).extend({
+
+	var EventManager = function() {};
+
+	$.extend(EventManager.prototype, {
 		reRegister: function(layer, element) {
 			if(!layer.id) return;
 			var layerEvents = eventCache[layer.id];
@@ -46,8 +41,6 @@ Stefan.EventManager = (function() {
 				eventCache[layer.id][type].destroy(element, callback);
 		}
 	});
-	
-	var manager = new Manager();
-	
-	return manager;
-})();
+
+	return EventManager;
+});

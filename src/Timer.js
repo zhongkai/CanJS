@@ -1,14 +1,5 @@
-goog.provide('Stefan.Timer');
-
-goog.require('Stefan');
-goog.require('Stefan.Updater');
-
-/**
- * 时间控制单例
- * @constructor
- */
-Stefan.Timer = (function() {
-	var timer = T.lang.createClass(function() {
+define(['Can', 'Updater'], function(can, updater) {
+	var Timer = function() {
 		
 		this.__active = false;
 		
@@ -24,7 +15,9 @@ Stefan.Timer = (function() {
 		
 		this.__callbackQueen = [];
 		
-	}).extend({
+	};
+
+	$.extend(Timer.prototype, {
 		/**
 		 * 注册时间步进回调函数任务
 		 * @param {Function} callback 回调函数
@@ -70,10 +63,10 @@ Stefan.Timer = (function() {
 		 * @param {boolean} once 是否只执行一次
 		 */
 		__mozCallback: function(event, once) {
-			Stefan.Timer.__time = event.timeStamp;
-			Stefan.Timer.__interval = Stefan.Timer.__time - Stefan.Timer.__lastTime;
-			Stefan.Timer.__step();
-			Stefan.Timer.__lastTime = Stefan.Timer.__time;
+			this.__time = event.timeStamp;
+			this.__interval = this.__time - this.__lastTime;
+			this.__step();
+			this.__lastTime = this.__time;
 			if(once) return;
 			window.mozRequestAnimationFrame();
 		},
@@ -91,7 +84,8 @@ Stefan.Timer = (function() {
 				});
 			}
 			else if(window.mozRequestAnimationFrame) {
-				window.addEventListener("MozBeforePaint", this.__mozCallback, false);
+				this.__mozBindCallback = can.bind(this.__mozCallback, this);
+				window.addEventListener("MozBeforePaint", this.__mozBindCallback, false);
 				window.mozRequestAnimationFrame();
 			}
 		    else {
@@ -115,7 +109,7 @@ Stefan.Timer = (function() {
 				if(!rightNow) this.__webkitCallback(true);
 			}
 			else if(window.mozRequestAnimationFrame) {
-				window.removeEventListener("MozBeforePaint", this.__mozCallback, false);
+				window.removeEventListener("MozBeforePaint", this.__mozBindCallback, false);
 				//一般情况下需要再跑一帧，做善后处理
 				this.__mozCallback({
 					timeStamp: new Date().valueOf()
@@ -129,9 +123,9 @@ Stefan.Timer = (function() {
 		}
 	});
 	
-	timer = new timer(true);
+	timer = new Timer(true);
 	
-	timer.register(Stefan.Updater.update, Stefan.Updater);
-	
+	timer.register(updater.update, updater);
+
 	return timer;
-})();
+});

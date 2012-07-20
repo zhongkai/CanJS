@@ -1,18 +1,9 @@
-/**
- * @author stefan
- * @version 1.0
- */
-goog.provide('Stefan.Updater');
-
-goog.require('Stefan');
-
-Stefan.Updater = (function() {
-	
-	var updater = function() {
+define(function() {
+	var Updater = function() {
 		this.layerHash = {};
 	}
 	
-	updater.prototype = {
+	Updater.prototype = {
 		/**
 		 * 为了避免调用indexOf，采用此hash
 		 */
@@ -37,5 +28,5 @@ Stefan.Updater = (function() {
 		}
 	};
 	
-	return new updater();
-})();
+	return new Updater();
+});
