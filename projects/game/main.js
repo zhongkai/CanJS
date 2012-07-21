@@ -8,6 +8,14 @@ Global = {
 	currentWater: 1000
 };
 
+$(document).on('touchstart', function(e) {
+	e.preventDefault();
+})
+
+$(document).on('touchmove', function(e) {
+	e.preventDefault();
+})
+
 
 require(['Timer', 'Layer', 'element/Rect', '../projects/game/toy', '../projects/game/block', '../projects/game/xiguan'], 
 function(timer, Layer, Rect, Toy, Block, XiGuan) {
