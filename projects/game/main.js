@@ -10,11 +10,36 @@ Global = {
 
 $(document).on('touchstart', function(e) {
 	e.preventDefault();
-})
+});
 
 $(document).on('touchmove', function(e) {
 	e.preventDefault();
-})
+});
+
+var orgEventOn = $.fn.on,
+    orgEventOff = $.fn.off,
+    transFn = function(str) {
+        var transEvent = {
+            'touchend': 'mouseup',
+            'touchstart': 'mousedown',
+            'touchmove': 'mousemove'
+        };
+        return str.replace(/touch(end|start|move)/gi, function(a) {
+            return  {
+                'touchend' : 'mouseup',
+                'touchstart' :'mousedown',
+                'touchmove' : 'mousemove'
+            }[a];
+        });
+    };
+
+$.fn.on = function(event, selector, callback) {
+    return orgEventOn.call(this, 'ontouchstart' in window ? event : transFn(event), selector, callback);
+};
+
+$.fn.off = function(event, selector, callback) {
+    return orgEventOff.call(this, 'ontouchstart' in window ? event : transFn(event), selector, callback);
+};
 
 
 require(['Timer', 'Layer', 'element/Rect', '../projects/game/toy', '../projects/game/block', '../projects/game/xiguan'], 
@@ -53,8 +78,15 @@ function(timer, Layer, Rect, Toy, Block, XiGuan) {
 		var bg = new Rect().setSize(640, 960).setFill('images/background.png');
 
 		layer.appendChild(bg);
+
+		var marginX = (document.documentElement.clientWidth - 640) / 2 + 'px';
+		var marginY = Math.max((document.documentElement.clientHeight - 960) / 2, 0) + 'px';
 		
-		$(layer.canvas).css('border', "3px solid rgba(0, 0, 0, .5)");
+		$(layer.canvas).css({
+			'border': "3px solid rgba(0, 0, 0, .5)",
+			'margin': marginY + ' ' + marginX,
+			'position': 'relative'
+		});
 		
 		//设置世界范围
 		var world = new b2World(new b2Vec2(0, 50), true);
