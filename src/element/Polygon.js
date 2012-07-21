@@ -11,7 +11,7 @@
  */
 define(['Can', 'Updater', 'element/Rect'], function(can, updater, Rect) {
 	var Polygon = can.inherit(Rect, {
-		constructor: function() {
+		constructor: function(config) {
 			config = config || {};
 			Rect.call(this, config);
 		    if(config.points) this.setPoints(config.points);
@@ -30,10 +30,9 @@ define(['Can', 'Updater', 'element/Rect'], function(can, updater, Rect) {
 		 * @return {Polygon} 多边形实例本身
 		 */
 		setPoints: function(points) {
-			var points = baidu.lang.toArray(points);
 			this.__points = [];
 		    for(var i = 0, maxi = points.length; i < maxi; i++) {
-		    	this.addPoint(points[i]);
+		    	this.addPoint([points[i]]);
 		    }
 		    if(this.getStage()) updater.register(this.getStage());
 		    return this;
@@ -45,7 +44,6 @@ define(['Can', 'Updater', 'element/Rect'], function(can, updater, Rect) {
 		 * @return {Polygon} 多边形实例本身
 		 */
 		addPoint: function(points) {
-		    var points = baidu.lang.toArray(points);
 		    if (!points.length) return;
 		
 			for (var i = 0; i < points.length; i++) {

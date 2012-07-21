@@ -20,8 +20,8 @@ define(['Can', 'event/Event'], function(can, Event) {
 			var id = layer.id;
 			if(!eventCache[id]) {
 				eventCache[id] = {};
-				T.each(eventsArr, function(eType) {
-					T.on(layer.canvas, eType, function(event) {
+				$.each(eventsArr, function(index, eType) {
+					$(layer.canvas).on(eType, function(event) {
 						var eventObj = eventCache[id][event.type];
 						if(eventObj) {
 							eventObj.nativeEvent = event;
@@ -31,7 +31,7 @@ define(['Can', 'event/Event'], function(can, Event) {
 				});
 			}
 			
-			if(!eventCache[id][type]) eventCache[id][type] = new Stefan.Event(type);
+			if(!eventCache[id][type]) eventCache[id][type] = new Event(type);
 			eventCache[id][type].register(element, callback);
 		},
 		
@@ -42,5 +42,5 @@ define(['Can', 'event/Event'], function(can, Event) {
 		}
 	});
 
-	return EventManager;
+	return new EventManager();
 });
