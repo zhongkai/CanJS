@@ -102,6 +102,7 @@ define(['element/Circle'], function(Circle) {
 			if(pt < 0) {
 				var score = Global.score - 2;
 				if(score <= 0) alert('你失败了！');
+				Global.score = score;
 				Global.setScore(score);
 			}
 
