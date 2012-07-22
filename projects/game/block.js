@@ -33,7 +33,7 @@ define(['element/Rect', 'fill/Border'], function(Rect, Border) {
 
 			cbody = me.can(layer);
 
-			cbody.setSize(2, 2);
+			cbody.setSize(23, 2).setFill('images/line/' + Math.ceil(Math.random() * 6) + '.png', 'repeat');
 
 			cbody.setPosition(__startPos);
 
@@ -53,7 +53,6 @@ define(['element/Rect', 'fill/Border'], function(Rect, Border) {
 
 			if(cacheTotalWater - dis >= 0) {
 				Global.setTotalWater(cacheTotalWater - dis);
-				console.info(cacheTotalWater - dis);
 			}
 			else {
 				Global.setTotalWater(0);
@@ -61,7 +60,7 @@ define(['element/Rect', 'fill/Border'], function(Rect, Border) {
 			}
 			
 
-			cbody.setSize(4, dis);
+			cbody.setSize(23, dis);
 			cbody.setRotation(-Math.acos(y / dis)/Math.PI*(x > 0 ? -180 : 180));
 		});
 
@@ -80,7 +79,7 @@ define(['element/Rect', 'fill/Border'], function(Rect, Border) {
 				dis = cacheTotalWater;
 			}
 
-			cbody.setSize(4, dis);
+			cbody.setSize(23, dis);
 			cbody.setRotation(-Math.acos(y / rdis)/Math.PI*(x > 0 ? -180 : 180));
 
 			var endPosition = {};

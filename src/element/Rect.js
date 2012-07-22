@@ -49,7 +49,7 @@ define(['Can', 'Updater', 'fill/Fill', 'element/Element', 'fill/ImageFill', 'fil
 		setFill: function(fill) {
 			if (fill instanceof Fill) 
 				this.__fill = fill;
-		    else if (arguments.length > 2)
+		    else if (arguments.length > 2 && !/repeat/.test(arguments[1]))
 		        this.__fill = new ColorFill({
 					color: Array.prototype.slice.call(arguments)
 				});
@@ -58,8 +58,10 @@ define(['Can', 'Updater', 'fill/Fill', 'element/Element', 'fill/ImageFill', 'fil
 		        this.__fill = new ColorFill({
 					color: fill
 				});
-			else	
-		    	this.__fill = new ImageFill(fill);
+			else {
+				// if(arguments[1]) debugger;
+				this.__fill = new ImageFill(fill, arguments[1]);
+			}
 		    	
 		    this.__fill.element = this;
 				

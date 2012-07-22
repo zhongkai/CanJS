@@ -482,8 +482,9 @@ define(['Can', 'Updater', 'event/EventManager'], function(can, updater, eventMan
 		eventTest: function(e) {
 			var position = this.screenToSelf({
 				//不能用x和y，否则会丢失scroll的距离
-				x: e.pageX,
-				y: e.pageY
+				//兼容移动的touchend
+				x: e.pageX || e.changedTouches[0].pageX,
+				y: e.pageY || e.changedTouches[0].pageY
 			});
 			var bounds = this.getSelfBounds();
 		    if (bounds.left <= position.x && bounds.right >= position.x &&

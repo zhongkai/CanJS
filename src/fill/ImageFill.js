@@ -10,11 +10,12 @@
  */
 define(['Can', 'Updater', 'fill/Fill'], function(can, updater, Fill) {
 	var ImageFill = can.inherit(Fill, {
-		constructor: function(url) {
+		constructor: function(url, repeat) {
 			Fill.call(this);
 			this.__url = url;
 			this.__image = can.images[url];
 			this.__loaded = false;
+			this.__repeat = repeat || 'no-repeat';
 			if(!this.__image) {
 				this.__image = new Image();
 				this.__image.src = url;
@@ -73,11 +74,20 @@ define(['Can', 'Updater', 'fill/Fill'], function(can, updater, Fill) {
 	        context.translate(bounds.left, bounds.top);
 	        
 	        if(this.__clip == null){
-	        	var aspx = size.width/this.__image.width, aspy = size.height/this.__image.height;
-		        var patten = context.createPattern(this.__image, 'no-repeat');
-		        context.scale(aspx, aspy);
-		        context.fillStyle = patten;
-		        context.fillRect(0, 0, this.__image.width, this.__image.height);
+	        	var patten = context.createPattern(this.__image, this.__repeat);
+	        	context.fillStyle = patten;
+	        	if(this.__repeat == 'no-repeat') {
+	        		var aspx = size.width/this.__image.width, aspy = size.height/this.__image.height;
+	        		context.scale(aspx, aspy);
+	        		context.fillRect(0, 0, this.__image.width, this.__image.height);
+	        	}
+	        	else {
+					context.fillRect(0, 0, size.width, size.height);
+	        	}
+
+		        
+		       
+		        
 			}else{
 				var aspx = size.width/this.__clip.width, aspy = size.height/this.__clip.height;
 				context.scale(aspx, aspy);

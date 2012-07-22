@@ -13,13 +13,18 @@ define(['element/Circle'], function(Circle) {
 		, b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
 		, b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef;
 
-	var Toy = function(world, layer) {
-		this.pbody = this.physic(world);
+	var Toy = function(world, layer, x, y) {
+		this.world = world;
 		this.cbody = this.can(layer);
-		this.cbody.setPosition(400, 100);
-		this.bind();
+		this.cbody.setPosition(x, y);
 		this.count = 1;
 	};
+
+	Toy.prototype.drop = function() {
+		var p = this.cbody.getPosition();
+		this.pbody = this.physic(p.x, p.y);
+		this.bind();
+	}
 
 	Toy.prototype.can = function(layer) {
 		var circle = new Circle().setSize(100, 100).setAnchor(.5, .5).setFill('images/bubble.png');
@@ -29,10 +34,10 @@ define(['element/Circle'], function(Circle) {
 		return circle;
 	};
 
-	Toy.prototype.physic = function(world) {
+	Toy.prototype.physic = function(x, y) {
 		var cbodyDef = new b2BodyDef();
 		cbodyDef.type = b2Body.b2_dynamicBody;
-		cbodyDef.position.Set(200, 50);
+		cbodyDef.position.Set(x, y);
 
 		var circleFix = new b2FixtureDef;
 		circleFix.density = 8.0;
@@ -41,7 +46,7 @@ define(['element/Circle'], function(Circle) {
 		console.info(circleFix);
 		circleFix.shape = new b2CircleShape(35); 
 
-		var cicleBody = world.CreateBody(cbodyDef);
+		var cicleBody = this.world.CreateBody(cbodyDef);
 		cicleBody.CreateFixture(circleFix);
 
 		return cicleBody;
@@ -58,6 +63,13 @@ define(['element/Circle'], function(Circle) {
 			if(me.count == 36) me.count = 1;
 			me.inner.setFill('images/redBall/redBall00' + (((me.count % 36) + '').length > 1 ? '' : '0') + me.count ++ % 36 + '.png');
 		});
+	};
+
+	Toy.prototype.positionTest = function() {
+		var pp = this.pbody.GetPostion();
+		if(pp.x < 0 || pp.x > Global.width * Global.scale) {
+			return false;
+		}
 	};
 
 	return Toy;

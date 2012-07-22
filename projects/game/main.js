@@ -5,7 +5,10 @@ require.config({
 
 Global = {
 	totalWater: 1000,
-	currentWater: 1000
+	currentWater: 1000,
+	scale: 1,
+	width: 640,
+	height: 960
 };
 
 $(document).on('touchstart', function(e) {
@@ -16,34 +19,8 @@ $(document).on('touchmove', function(e) {
 	e.preventDefault();
 });
 
-var orgEventOn = $.fn.on,
-    orgEventOff = $.fn.off,
-    transFn = function(str) {
-        var transEvent = {
-            'touchend': 'mouseup',
-            'touchstart': 'mousedown',
-            'touchmove': 'mousemove'
-        };
-        return str.replace(/touch(end|start|move)/gi, function(a) {
-            return  {
-                'touchend' : 'mouseup',
-                'touchstart' :'mousedown',
-                'touchmove' : 'mousemove'
-            }[a];
-        });
-    };
-
-$.fn.on = function(event, selector, callback) {
-    return orgEventOn.call(this, 'ontouchstart' in window ? event : transFn(event), selector, callback);
-};
-
-$.fn.off = function(event, selector, callback) {
-    return orgEventOff.call(this, 'ontouchstart' in window ? event : transFn(event), selector, callback);
-};
-
-
-require(['Timer', 'Layer', 'element/Rect', '../projects/game/toy', '../projects/game/block', '../projects/game/xiguan'], 
-function(timer, Layer, Rect, Toy, Block, XiGuan) {
+require(['Timer', 'Layer', 'element/Rect', '../projects/game/cm', '../projects/game/block', '../projects/game/xiguan'], 
+function(timer, Layer, Rect, CM, Block, XiGuan) {
 	var   b2Vec2 = Box2D.Common.Math.b2Vec2
 		, b2AABB = Box2D.Collision.b2AABB
 		, b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -58,42 +35,42 @@ function(timer, Layer, Rect, Toy, Block, XiGuan) {
 		, b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
 		, b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef;
 
-	var xiguan;
+	var W = Global.width * Global.scale;
+	var H = Global.height * Global.scale;
+	var xiguan, layer, X = (document.documentElement.clientWidth - Global.width) / 2 + 'px',
+		Y = Math.max((document.documentElement.clientHeight - H) / 2, 0) + 'px';
 
 	Global.setTotalWater = function(water) {
 		this.currentWater = water;
 		xiguan.setLength(water);
 	};
 
-	$(function() {
+	Global.start = function(mock) {
+		mock && mock.remove();
 
-
-		var layer = new Layer(document.body, {
-			width: 640,
-			height: 960,
-			left: 0,
-			top: 0
-		});
-
-		var bg = new Rect().setSize(640, 960).setFill('images/background.png');
+		var bg = new Rect().setSize(Global.width, Global.height).setFill('images/background.png').setScale(Global.scale);
 
 		layer.appendChild(bg);
 
-		var marginX = (document.documentElement.clientWidth - 640) / 2 + 'px';
-		var marginY = Math.max((document.documentElement.clientHeight - 960) / 2, 0) + 'px';
+		var rope = new Rect().setSize(640, 80).setFill('images/rope.png').setPosition(0, 34).setAnchor(0, 0);
+
+		layer.appendChild(rope);
 		
 		$(layer.canvas).css({
 			'border': "3px solid rgba(0, 0, 0, .5)",
-			'margin': marginY + ' ' + marginX,
-			'position': 'relative'
+			'left': X,
+			'top': Y,
+			'position': 'ablsolute'
 		});
 		
 		//设置世界范围
 		var world = new b2World(new b2Vec2(0, 50), true);
 
-		var toy = new Toy(world, layer);
+		// var toy = new Toy(world, layer);
 
 		var block = new Block(world, layer);
+
+		var cm = new CM(world, layer);
 
 		xiguan = new XiGuan(layer);
 
@@ -103,6 +80,50 @@ function(timer, Layer, Rect, Toy, Block, XiGuan) {
 		});
 
 		timer.active();
+	};
+
+	Global.showEntry = function(callback) {
+		var entryParent = $('<div></div>');
+		entryParent.css({
+			'left': X,
+			'top': Y,
+			'position': 'absolute',
+			'height': Global.height,
+			'width': Global.width,
+			'-webkit-transform': 'scale(' + Global.scale + ')',
+			'z-index': 1,
+			'background': 'url(images/background.png) no-repeat 0 bottom'
+		});
+		var entryHTML = [
+			'<div id="tip-play" style="-webkit-transform: all .5s ease-out; width: 220px; left: 190px; height: 130px; position:absolute; bottom: 500px;background: url(images/play.png) no-repeat 0 0;"></div>',
+			'<div id="tip-help" style="-webkit-transform: all .5s ease-out;width: 260px; left: 190px; height: 130px; position:absolute; bottom: 400px;background: url(images/help.png) no-repeat 0 0;"></div>',
+			'<div id="tip-credit" style="-webkit-transform: all .5s ease-out;width: 290px; left: 190px; height: 130px; position:absolute; bottom: 300px;background: url(images/credit.png) no-repeat 0 0;"></div>'
+		].join('');
+		entryParent.html(entryHTML);
+
+		$('body').append(entryParent);
+
+		$('#tip-play').on('click', function() {
+			callback && callback(entryParent);
+		});
+		$('#tip-help').on('click', function() {
+		});
+		$('#tip-credit').on('click', function() {
+		});
+	};
+
+	$(function() {
+		layer = new Layer(document.body, {
+			width: W,
+			height: H,
+			left: 0,
+			top: 0
+		});
+
+		Global.start();
+		
+		// Global.showEntry(Global.start);
+
 		return;
 
 

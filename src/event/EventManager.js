@@ -6,7 +6,7 @@
 define(['Can', 'event/Event'], function(can, Event) {
 	var eventCache = {};
 	
-	var eventsArr = ['mousedown', 'mouseup', 'mousemove', 'click', 'dblclick'];
+	var eventsArr = ['mousedown', 'mouseup', 'mousemove', 'touchstart', 'touchmove', 'touchend', 'click', 'dblclick'];
 
 	var EventManager = function() {};
 
@@ -17,6 +17,11 @@ define(['Can', 'event/Event'], function(can, Event) {
 		},
 		register: function(layer, element, type, callback) {
 			if(!layer) return;
+			if('ontouchstart' in window) {
+				type = type == 'mouseup' ? 'touchend' : type;
+				type = type == 'mousedown' ? 'touchstart' : type;
+				type = type == 'mousemove' ? 'touchmove' : type;
+			}
 			var id = layer.id;
 			if(!eventCache[id]) {
 				eventCache[id] = {};
@@ -32,6 +37,7 @@ define(['Can', 'event/Event'], function(can, Event) {
 			}
 			
 			if(!eventCache[id][type]) eventCache[id][type] = new Event(type);
+
 			eventCache[id][type].register(element, callback);
 		},
 		
