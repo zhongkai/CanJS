@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html manifest="manifest/app.manifest">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
 		<meta http-equiv="Cache-control" content="no-cache"/>
-		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+		<meta name="viewport" content="width=850"/>
 		<meta name="format-detection" content="telephone=no"/>
 		<meta name="format-detection" content="address=no"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -23,6 +24,16 @@
 			#tip-credit:hover {
 				-webkit-transform: rotate(30deg);
 			}
+
+			@-webkit-keyframes loading {
+			    0% {
+			        -webkit-transform: rotate(0deg);
+			    }
+			    100% {
+			    	-webkit-transform: rotate(360deg);
+			    }
+			}
+
 		</style>
 		<script src="../../lib/requirejs/require-debug.js"></script>
 		<script src="../../lib/zepto/zepto-debug.js"></script>
